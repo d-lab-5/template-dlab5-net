@@ -1,0 +1,27 @@
+{
+  "name": "template-dlab5-net",
+  "private": true,
+  "description": "D-LAB-5 fullstack template — Gatsby 5 frontend, Amplify Gen 2 backend, one Cognito gate",
+  "license": "MIT",
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "build": "npm run build:core && npm run build:web",
+    "build:core": "npm run build -w @dlab5/app-core",
+    "build:web": "npm run build -w @dlab5/app-site",
+    "dev:web": "npm run develop -w @dlab5/app-site",
+    "start:web": "npm run serve -w @dlab5/app-site",
+    "clean:web": "npm run clean -w @dlab5/app-site",
+    "test": "npm run test --workspaces --if-present",
+    "backend:install": "npm --prefix backend install",
+    "backend:sandbox": "npm --prefix backend run sandbox",
+    "backend:sync-outputs": "npm --prefix backend run sync-outputs",
+    "backend:typecheck": "npm --prefix backend run typecheck",
+    "verify:auth": "node scripts/verify-auth.mjs",
+    "rename": "node scripts/rename.mjs"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}

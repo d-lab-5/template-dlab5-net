@@ -1,0 +1,747 @@
+/*
+ * D-LAB-5 template — component styles.
+ *
+ * Every value here comes from tokens.css. If you find yourself typing a hex
+ * code in this file, the token is missing — add it there, in BOTH themes,
+ * rather than hard-coding it once.
+ *
+ * Naming is .app-{component}__{part}--{modifier} throughout. It is not
+ * fashionable and it is not enforced by tooling; it is here so that a class in
+ * the markup can be found in this file by reading it.
+ *
+ * NOTE (CLAUDE.md constraint 13): a change to this file needs a clean build to
+ * appear. `npm run build` reuses the cached stylesheet and emits an IDENTICAL
+ * content hash, so the page renders with the old CSS and your edit looks like
+ * it did nothing. Run:
+ *     rm -rf packages/site/.cache packages/site/public && npm run build
+ */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#___gatsby,
+#gatsby-focus-wrapper {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--app-bg);
+  color: var(--app-text);
+  font-family: var(--app-font);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+code {
+  font-family: var(--app-font-mono);
+  font-size: 0.9em;
+  background: var(--app-bg-sunken);
+  padding: 0.1em 0.35em;
+  border-radius: var(--app-radius-sm);
+}
+
+a {
+  color: var(--app-accent);
+}
+
+/* -- the sign-in / notice screen ------------------------------------------ */
+
+.app-gate {
+  min-height: 100%;
+  display: grid;
+  place-items: center;
+  padding: var(--app-space-6);
+}
+
+.app-gate__card {
+  width: 100%;
+  max-width: 26rem;
+  background: var(--app-surface);
+  border: 1px solid var(--app-border);
+  border-radius: var(--app-radius);
+  box-shadow: var(--app-shadow);
+  padding: var(--app-space-8);
+  display: grid;
+  gap: var(--app-space-4);
+}
+
+.app-gate__title {
+  margin: 0;
+  font-size: 1.375rem;
+  letter-spacing: -0.01em;
+}
+
+.app-gate__subtitle {
+  margin: 0;
+  color: var(--app-text-muted);
+  font-size: 0.875rem;
+}
+
+.app-gate__error {
+  margin: 0;
+  color: var(--app-danger);
+  font-size: 0.875rem;
+}
+
+/* -- form primitives ------------------------------------------------------ */
+
+.app-field {
+  display: grid;
+  gap: var(--app-space-1);
+  font-size: 0.875rem;
+}
+
+.app-field > span {
+  color: var(--app-text-muted);
+}
+
+.app-field input,
+.app-field textarea,
+.app-field select {
+  background: var(--app-bg-sunken);
+  border: 1px solid var(--app-border-strong);
+  border-radius: var(--app-radius-sm);
+  color: var(--app-text);
+  font: inherit;
+  padding: var(--app-space-2) var(--app-space-3);
+}
+
+.app-field input:focus-visible,
+.app-field textarea:focus-visible,
+.app-field select:focus-visible {
+  outline: 2px solid var(--app-accent);
+  outline-offset: 1px;
+}
+
+.app-button {
+  background: var(--app-accent-strong);
+  border: 0;
+  border-radius: var(--app-radius-sm);
+  color: var(--app-text-inverse);
+  cursor: pointer;
+  font: inherit;
+  font-weight: 600;
+  padding: var(--app-space-3) var(--app-space-4);
+}
+
+.app-button:disabled {
+  opacity: 0.6;
+  cursor: progress;
+}
+
+.app-button--ghost {
+  background: none;
+  color: var(--app-text);
+  border: 1px solid var(--app-border-strong);
+}
+
+.app-button--ghost:hover {
+  background: var(--app-surface);
+  border-color: var(--app-text-muted);
+}
+
+.app-linkbutton {
+  background: none;
+  border: 1px solid var(--app-border-strong);
+  border-radius: var(--app-radius-sm);
+  color: var(--app-text-muted);
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.875rem;
+  padding: var(--app-space-1) var(--app-space-3);
+}
+
+.app-linkbutton:hover {
+  color: var(--app-text);
+  border-color: var(--app-text-muted);
+}
+
+.app-linkbutton--danger:hover {
+  color: var(--app-danger);
+  border-color: var(--app-danger);
+}
+
+/* -- app shell ------------------------------------------------------------ */
+
+.app-shell {
+  min-height: 100%;
+}
+
+.app-shell--railed {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: start;
+}
+
+.app-shell__body {
+  min-width: 0;
+  min-height: 100vh;
+  display: grid;
+  grid-template-rows: auto 1fr;
+}
+
+.app-shell__header {
+  display: flex;
+  align-items: center;
+  gap: var(--app-space-3);
+  padding: var(--app-space-3) var(--app-space-6);
+  background: var(--app-bg-sunken);
+  border-bottom: 1px solid var(--app-border);
+}
+
+.app-shell__title {
+  font-weight: 700;
+  font-size: 0.9375rem;
+}
+
+.app-shell__meta {
+  color: var(--app-text-muted);
+  font-size: 0.75rem;
+}
+
+.app-shell__spacer {
+  flex: 1;
+}
+
+.app-shell__railtoggle {
+  min-width: 2rem;
+  line-height: 1;
+}
+
+.app-shell__main {
+  padding: var(--app-space-8) var(--app-space-6);
+  max-width: 84rem;
+  width: 100%;
+  margin-inline: auto;
+}
+
+.app-mark {
+  display: grid;
+  place-items: center;
+  width: 1.7rem;
+  height: 1.7rem;
+  flex: none;
+  border-radius: 7px;
+  background: linear-gradient(
+    135deg,
+    var(--app-accent),
+    var(--app-accent-strong)
+  );
+  color: var(--app-text-inverse);
+}
+
+/* -- rail ----------------------------------------------------------------- */
+
+.app-rail {
+  width: 232px;
+  flex: none;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--app-space-3);
+  padding: var(--app-space-4) 0;
+  background: var(--app-rail);
+  border-right: 1px solid var(--app-border);
+  transition: width 180ms ease;
+}
+
+/* Collapsed to nothing rather than to icons: at this width an icon rail would
+   need its own labelling story, and the toggle is one click away. */
+.app-rail--closed {
+  width: 0;
+  padding-inline: 0;
+  overflow: hidden;
+  border-right-width: 0;
+}
+
+.app-rail__brand {
+  display: flex;
+  align-items: center;
+  gap: var(--app-space-2);
+  padding: 0 var(--app-space-4) var(--app-space-3);
+  border-bottom: 1px solid var(--app-border);
+  color: var(--app-text);
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.app-rail__brandaccent {
+  color: var(--app-accent);
+}
+
+.app-rail__switcher {
+  display: grid;
+  gap: var(--app-space-1);
+  padding: 0 var(--app-space-4);
+}
+
+.app-rail__switcherlabel {
+  font-family: var(--app-font-mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--app-text-muted);
+}
+
+.app-rail__switcher select {
+  width: 100%;
+  background: var(--app-bg-sunken);
+  border: 1px solid var(--app-border-strong);
+  border-radius: var(--app-radius-sm);
+  color: var(--app-text);
+  font: inherit;
+  font-size: 0.8rem;
+  padding: var(--app-space-1) var(--app-space-2);
+}
+
+.app-rail__section {
+  display: grid;
+  gap: var(--app-space-2);
+}
+
+.app-rail__sectionlabel {
+  margin: 0;
+  padding: 0 var(--app-space-4);
+  font-size: 0.625rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--app-text-muted);
+}
+
+.app-rail__items {
+  list-style: none;
+  margin: 0;
+  padding: 0 var(--app-space-3);
+  display: grid;
+  gap: 2px;
+}
+
+.app-rail__item {
+  display: flex;
+  align-items: center;
+  gap: var(--app-space-3);
+  padding: var(--app-space-2) var(--app-space-3);
+  border: 1px solid transparent;
+  border-radius: var(--app-radius-sm);
+  color: var(--app-text);
+  font-size: 0.8rem;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.app-rail__item:hover {
+  background: var(--app-surface);
+  border-color: var(--app-border);
+}
+
+.app-rail__item--on {
+  background: var(--app-surface);
+  border-color: var(--app-border-strong);
+}
+
+/* A rail entry that is a button must not inherit the browser's button look. */
+.app-rail__item--button {
+  width: 100%;
+  background: none;
+  border: 1px solid transparent;
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.8rem;
+  text-align: left;
+}
+
+.app-rail__dot {
+  margin-left: auto;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  flex: none;
+  background: var(--app-accent);
+}
+
+.app-rail__who,
+.app-rail__note {
+  margin: 0;
+  padding: 0 var(--app-space-4);
+  font-size: 0.6875rem;
+  line-height: 1.55;
+  color: var(--app-text-muted);
+  overflow-wrap: anywhere;
+}
+
+/* -- the appearance segmented control ------------------------------------- */
+
+.app-seg {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2px;
+  margin: 0 var(--app-space-3);
+  padding: 2px;
+  border: 1px solid var(--app-border);
+  border-radius: var(--app-radius-sm);
+  background: var(--app-bg-sunken);
+}
+
+.app-seg__option {
+  border: none;
+  border-radius: calc(var(--app-radius-sm) - 2px);
+  background: none;
+  color: var(--app-text-muted);
+  font: inherit;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: var(--app-space-2) 0;
+  cursor: pointer;
+}
+
+.app-seg__option--on {
+  background: var(--app-surface-raised);
+  color: var(--app-text);
+}
+
+/* -- the guest shell ------------------------------------------------------- */
+
+/* Wider than the signed-in rail: this one holds a real form with two fields,
+   not a list of links. */
+.app-shell--guest .app-rail {
+  width: 280px;
+}
+
+/* The sign-in form sits inside the rail, so it drops the card treatment it
+   had when it owned the page. */
+.app-shell--guest .app-gate__card {
+  max-width: none;
+  background: none;
+  border: 0;
+  box-shadow: none;
+  padding: 0 var(--app-space-4);
+  gap: var(--app-space-3);
+}
+
+.app-shell--guest .app-gate__title {
+  font-size: 0.9375rem;
+}
+
+.app-shell--guest .app-gate__subtitle {
+  font-size: 0.75rem;
+}
+
+/* -- hero, on the signed-in home ------------------------------------------ */
+
+.app-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 18rem);
+  gap: var(--app-space-6);
+  align-items: center;
+  margin-bottom: var(--app-space-6);
+}
+
+.app-hero__copy {
+  display: grid;
+  gap: var(--app-space-4);
+  align-content: start;
+  max-width: 40rem;
+}
+
+.app-hero__eyebrow {
+  display: flex;
+  align-items: center;
+  gap: var(--app-space-2);
+  margin: 0;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--app-accent);
+}
+
+.app-hero__eyebrow::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.app-hero__title {
+  margin: 0;
+  font-size: clamp(1.875rem, 1.3rem + 2.4vw, 3rem);
+  line-height: 1.08;
+  letter-spacing: -0.025em;
+}
+
+.app-hero__titleaccent {
+  color: var(--app-accent);
+}
+
+.app-hero__lede {
+  margin: 0;
+  max-width: 34rem;
+  color: var(--app-text-muted);
+  line-height: 1.65;
+}
+
+.app-hero__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--app-space-3);
+}
+
+.app-hero__art {
+  width: 100%;
+  height: auto;
+  max-height: 13rem;
+  justify-self: end;
+  opacity: 0.9;
+}
+
+/* -- stats ---------------------------------------------------------------- */
+
+.app-stats {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0;
+  border: 1px solid var(--app-border);
+  border-radius: var(--app-radius);
+  background: var(--app-surface);
+  overflow: hidden;
+}
+
+.app-stat {
+  flex: 1 1 8rem;
+  padding: var(--app-space-3) var(--app-space-4);
+  border-right: 1px solid var(--app-border);
+}
+
+.app-stat:last-child {
+  border-right: 0;
+}
+
+.app-stat dt {
+  font-size: 1.25rem;
+  font-weight: 700;
+  /* Tabular figures so a number that changes does not shift the layout. */
+  font-variant-numeric: tabular-nums;
+  line-height: 1.1;
+}
+
+.app-stat dd {
+  margin: 3px 0 0;
+  font-size: 0.625rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--app-text-muted);
+  font-family: var(--app-font-mono);
+}
+
+/* -- cards ---------------------------------------------------------------- */
+
+.app-cards__heading {
+  margin: 0 0 var(--app-space-4);
+  scroll-margin-top: var(--app-space-6);
+}
+
+.app-cards {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: var(--app-space-4);
+  grid-template-columns: repeat(auto-fill, minmax(18rem, 1fr));
+}
+
+.app-card {
+  display: grid;
+  gap: var(--app-space-1);
+  background: var(--app-surface);
+  border: 1px solid var(--app-border);
+  border-radius: var(--app-radius);
+  padding: var(--app-space-4);
+  color: inherit;
+  text-decoration: none;
+}
+
+.app-card:hover {
+  border-color: var(--app-accent);
+}
+
+.app-card__title {
+  font-weight: 600;
+}
+
+.app-card__body,
+.app-card__meta {
+  color: var(--app-text-muted);
+  font-size: 0.875rem;
+}
+
+/* -- a placeholder view --------------------------------------------------- */
+
+/*
+ * Every screen under /w/<slug>/ is one of these until a fork replaces it.
+ * Styled rather than left bare on purpose: an unstyled placeholder reads as a
+ * broken page, and the first real screen should be able to keep the frame and
+ * change only what is inside it.
+ */
+.app-panel {
+  background: var(--app-surface);
+  border: 1px solid var(--app-border);
+  border-radius: var(--app-radius);
+  padding: var(--app-space-6);
+  display: grid;
+  gap: var(--app-space-3);
+}
+
+.app-panel__title {
+  margin: 0;
+  font-size: 1.0625rem;
+}
+
+.app-panel__hint {
+  margin: 0;
+  color: var(--app-text-muted);
+  font-size: 0.875rem;
+  max-width: 46rem;
+  line-height: 1.65;
+}
+
+.app-pagehead {
+  display: flex;
+  align-items: baseline;
+  gap: var(--app-space-6);
+  flex-wrap: wrap;
+  margin-bottom: var(--app-space-4);
+}
+
+/* -- small states --------------------------------------------------------- */
+
+.app-lede,
+.app-muted {
+  color: var(--app-text-muted);
+}
+
+.app-error {
+  color: var(--app-danger);
+}
+
+.app-empty {
+  border: 1px dashed var(--app-border-strong);
+  border-radius: var(--app-radius);
+  padding: var(--app-space-6);
+}
+
+.app-empty p {
+  margin: 0 0 var(--app-space-2);
+}
+
+.app-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--app-space-2);
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--app-accent);
+}
+
+.app-badge::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.app-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--app-space-2);
+  background: none;
+  border: 1px solid var(--app-border-strong);
+  border-radius: 999px;
+  color: var(--app-text-muted);
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.8rem;
+  padding: var(--app-space-1) var(--app-space-3);
+}
+
+.app-chip--on {
+  color: var(--app-text);
+  border-color: var(--app-accent);
+  background: var(--app-surface);
+}
+
+/* -- narrow viewports ------------------------------------------------------ */
+
+@media (max-width: 52rem) {
+  .app-shell--railed {
+    grid-template-columns: 1fr;
+  }
+
+  /* The rail stops being a column and becomes a band above the content.
+     `position: static` matters: a sticky element with height:100vh at this
+     width covers the page. */
+  .app-rail {
+    position: static;
+    height: auto;
+    width: 100%;
+    border-right: 0;
+    border-bottom: 1px solid var(--app-border);
+  }
+
+  .app-rail__items {
+    display: flex;
+    flex-wrap: wrap;
+  }
+}
+
+@media (max-width: 900px) {
+  .app-shell--guest .app-rail {
+    width: 100%;
+  }
+
+  .app-hero {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  /* The art is decoration; at this width the copy needs the room. */
+  .app-hero__art {
+    display: none;
+  }
+}
+
+/* -- motion ---------------------------------------------------------------- */
+
+/*
+ * Anything that moves on its own stops when the reader has asked for that.
+ * Transitions on a deliberate action — the rail opening because a button was
+ * pressed — are covered too, which is a slight over-reach and the right
+ * trade: it is one rule, and unattended motion is what causes trouble.
+ */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
