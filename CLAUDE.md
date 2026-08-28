@@ -32,8 +32,9 @@ What is placeholder, and expected to go:
 
 What is **not** placeholder, and should survive: `AuthGate`, `amplify.ts`,
 `useTheme`, `gatsby-ssr.tsx`, `gatsby-node.ts`, `amplify.yml`, `objectProxy`,
-the hardening in `backend.ts`, `tokens.css`, and the constraints below. Those
-are the point of the template.
+the hardening in `backend.ts`, `tokens.css`, `scripts/dev.sh`,
+`scripts/verify-auth.mjs`, and the constraints below. Those are the point of
+the template.
 
 ## What this is
 
@@ -56,6 +57,7 @@ backend/            Amplify Gen 2 backend. NOT an npm workspace — see ADR-0001
 packages/core/      Domain logic. Pure TS, no React, no AWS, no DOM.
 packages/site/      The Gatsby 5 app (@dlab5/app-site).
 docs/adr/           Architecture Decision Records. Read these first.
+scripts/dev.sh      Sandbox + Gatsby in one terminal. The usual entry point.
 scripts/rename.mjs  Turns this template into a project.
 scripts/verify-auth.mjs   The only check that proves the gate against real AWS.
 ```
@@ -65,18 +67,32 @@ scripts/verify-auth.mjs   The only check that proves the gate against real AWS.
 ```bash
 npm install && npm --prefix backend install   # two installs; separate trees
 
-npm run dev:web                     # http://localhost:8000
+npm run dev                         # sandbox + site, one terminal — start here
+npm run dev -- --web-only           # site alone, no AWS
+npm run dev -- --profile work       # a different AWS profile
+npm run dev -- --identifier qa      # a second, parallel sandbox
+
 npm run build                       # must pass with NO amplify_outputs.json
 npm test                            # packages/core, node --test
 npm run backend:typecheck
+npm run clean:web                   # after a global.css change — constraint 13
 
-npm --prefix backend run sandbox:once   # deploy a personal AWS sandbox + sync
-npm run backend:sync-outputs            # copy amplify_outputs.json into the site
-npm --prefix backend run sandbox:delete
+npm --prefix backend run sandbox:once     # one deploy, no watch
+npm --prefix backend run sandbox:delete   # tear the sandbox down
+npm run backend:sync-outputs              # copy outputs into the site by hand
 
 APP_USER=… APP_PASSWORD=… npm run verify:auth   # ADR-0002 invariants, live
 npm run rename -- --name "Fleet" --slug fleet --prefix fl --dry-run
 ```
+
+`npm run dev` (`scripts/dev.sh`) exists because the sandbox and the site have an
+ordering constraint: `ampx sandbox` writes `amplify_outputs.json` and the site
+is useless without it. Run in two terminals, Gatsby usually wins the race,
+finds no outputs and renders the "backend not configured" notice for the rest
+of the session — which looks like a broken build and is only a race. The script
+starts the sandbox, waits for the outputs, copies them in, then starts Gatsby,
+and re-copies on every redeploy. It also checks the inotify limits of
+constraint 10 before Gatsby has a chance to die of them.
 
 `verify:auth` drives the real `aws-amplify/auth` client through the same
 sequence `AuthGate` uses — `signIn`, the new-password challenge,
@@ -86,6 +102,38 @@ account still in `FORCE_CHANGE_PASSWORD`. Run it after any change to
 `auth/resource.ts`, `backend.ts` or `AuthGate.tsx`. Everything else in this
 repository proves the code agrees with itself; this is the only thing that
 proves it agrees with AWS.
+
+## Which AWS account does the sandbox deploy to?
+
+**Nothing in this repository names an account, and nothing should.** The answer
+differs per developer and per machine, and a committed account id is both wrong
+for everyone else and something you then have to redact.
+
+`ampx sandbox` uses the ordinary AWS SDK credential chain, first match wins:
+
+1. `AWS_ACCESS_KEY_ID` / `AWS_SECRET_ACCESS_KEY` / `AWS_SESSION_TOKEN`
+2. `AWS_PROFILE`, or `--profile` passed through `npm run dev -- --profile <name>`
+3. the `[default]` profile in `~/.aws/credentials` and `~/.aws/config`
+4. SSO, then the EC2/ECS instance role
+
+So the account is **whatever your shell already points at**. That is convenient,
+and it is exactly how someone deploys a sandbox into production by accident, so
+`npm run dev` prints the account, region, profile and sandbox identifier and
+makes you look at them before anything is created. The region comes from the
+same chain (`AWS_REGION`, then the profile's `region`); `ampx` refuses to deploy
+without one.
+
+Sandboxes are **per-person, not per-repo**. The stack is named
+`amplify-<backendName>-<identifier>-<pathHash>`, where `<backendName>` comes
+from `backend/package.json` and `<identifier>` defaults to your system
+username. Two people therefore never collide, and one person can run several
+with `--identifier`. A sandbox is a real deployment holding a real Cognito pool,
+S3 bucket and DynamoDB tables — it costs a little and it outlives your terminal.
+Delete it deliberately:
+
+```bash
+npm --prefix backend run sandbox:delete
+```
 
 ## Non-obvious constraints
 

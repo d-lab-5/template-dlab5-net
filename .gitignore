@@ -167,6 +167,10 @@ packages/*/dist/
 # Scratch space for specs and notes that are not yet part of the repo
 temp/
 
+# scripts/dev.sh writes the sandbox's output here so the terminal stays
+# readable. Local, and regenerated on every run.
+.dev-sandbox.log
+
 # ---------------------------------------------------------------------------
 # Secrets hygiene — ASSUME THIS REPOSITORY IS PUBLIC.
 #

@@ -17,6 +17,7 @@ down in [`CLAUDE.md`](CLAUDE.md) and [`docs/adr/`](docs/adr/).
 | **Storage** | An `objectProxy` Lambda that is the real authorization boundary, hands back presigned GETs, and enforces an `If-Match` precondition on every write. |
 | **Frontend** | One shell component, a collapsible rail with a placeholder menu, a light/dark theme with no flash on load, and a token palette defined in both themes. |
 | **Build** | An `amplify.yml` whose comments encode why every line is the way it is. The build passes with no backend deployed. |
+| **Dev loop** | `npm run dev` — sandbox and site in one terminal, in the right order, with the AWS account printed before anything is created. |
 | **Tests** | `node --test` over `packages/core`, plus `verify-auth.mjs` for the live sign-in path. |
 
 ## Getting started
@@ -24,19 +25,57 @@ down in [`CLAUDE.md`](CLAUDE.md) and [`docs/adr/`](docs/adr/).
 ```bash
 nvm use                                        # Node 22
 npm install && npm --prefix backend install    # separate trees — ADR-0001
-npm run dev:web                                # http://localhost:8000
+npm run dev                                    # sandbox + site, one terminal
 ```
 
-With no backend deployed you will see the "backend not configured" notice.
-That is correct, and the build passing in that state is a property worth
-keeping. To get further:
+`npm run dev` deploys your personal AWS sandbox, waits for it, wires its
+outputs into the site, and starts Gatsby on http://localhost:8000 — then
+re-wires them on every backend redeploy. The first deploy takes a few minutes;
+after that it watches.
+
+No AWS, or you only want the frontend:
 
 ```bash
-npm --prefix backend run sandbox:once   # deploy a personal AWS sandbox + sync
+npm run dev -- --web-only
 ```
 
-Then create a user in the Cognito console and add them to `app-admins`.
-There is no sign-up: the landing page is the sign-in page.
+You will then see the "backend not configured" notice. That is correct, and the
+build passing in that state is a property worth keeping — a frontend-only
+rebuild must never fail the branch.
+
+Once the backend is up, create a user in the Cognito console and add them to
+`app-admins`. There is no sign-up: the landing page is the sign-in page.
+
+### Which AWS account?
+
+Nothing in this repository names one. `ampx sandbox` uses the ordinary AWS SDK
+credential chain — `AWS_ACCESS_KEY_ID…`, then `AWS_PROFILE` or `--profile`,
+then the `[default]` profile in `~/.aws`, then SSO or an instance role — so the
+account is whatever your shell already points at.
+
+That is convenient and it is how a sandbox ends up in production by accident,
+so `npm run dev` prints the account, region, profile and sandbox name and makes
+you look before it creates anything:
+
+```
+▸ AWS
+  account     123456789012
+  region      eu-central-1
+  profile     default
+  sandbox     frankuwe
+```
+
+Use a different one with `npm run dev -- --profile work`, and run a second
+sandbox side by side with `--identifier qa`. Sandboxes are per-person: the
+stack name embeds your system username, so two people never collide.
+
+A sandbox is a real deployment holding a real Cognito pool, S3 bucket and
+DynamoDB tables. It costs a little and it outlives your terminal — Ctrl-C
+stops the dev server, not the backend. Remove it deliberately:
+
+```bash
+npm --prefix backend run sandbox:delete
+```
 
 ## Forking it
 

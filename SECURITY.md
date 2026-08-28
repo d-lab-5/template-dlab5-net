@@ -22,6 +22,9 @@ plan.
   values.
 - Private keys, certificates, `credentials`, `aws-exports.js`.
 - Real names, email addresses or internal hostnames in seed data or fixtures.
+- `.dev-sandbox.log` — `scripts/dev.sh` writes the sandbox's own output there,
+  which names CloudFormation stacks and can carry the account id. It is
+  ignored, and it is worth knowing it exists before you paste it into an issue.
 
 ## `GATSBY_` variables are public
 
@@ -63,6 +66,25 @@ improves the experience of a legitimate user and stops nobody. In particular:
 - Validate at the boundary, and report every problem at once rather than the
   first — a validator that reports one field per attempt turns a malformed
   payload into a sequence of deploys.
+
+## AWS credentials
+
+Nothing in this repository holds AWS credentials, and nothing should.
+`ampx sandbox` resolves them from the ordinary SDK chain — environment
+variables, then `AWS_PROFILE` or `--profile`, then `~/.aws`, then SSO or an
+instance role — so a sandbox deploys to **whatever account your shell already
+points at**.
+
+That is the risk worth naming: there is no repository-level guard against
+deploying a sandbox into a production account, because the repository does not
+get a say. `npm run dev` prints the account, region and profile before it
+creates anything, and reading that line is the control. Prefer short-lived
+credentials (SSO, `aws sso login`) over the long-lived `AKIA…` keys in
+`~/.aws/credentials` wherever the organisation supports it.
+
+A sandbox is a real deployment. `npm --prefix backend run sandbox:delete` when
+you are done with it, rather than leaving an unattended Cognito pool and S3
+bucket in an account nobody is watching.
 
 ## Dependencies
 

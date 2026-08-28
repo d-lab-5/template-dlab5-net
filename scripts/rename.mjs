@@ -60,6 +60,10 @@ const SKIP_PATH_PREFIXES = ["docs/adr/"];
 const TEXT_EXTENSIONS = new Set([
   ".ts", ".tsx", ".js", ".jsx", ".mjs", ".cjs",
   ".css", ".json", ".md", ".yml", ".yaml", ".html", ".svg", ".txt", ".example",
+  // Shell too. scripts/dev.sh has nothing to rename today, which is exactly
+  // why leaving it out would go unnoticed until a fork put a group name or a
+  // token prefix in it.
+  ".sh",
 ]);
 
 /* -- arguments ------------------------------------------------------------- */
