@@ -47,8 +47,11 @@ try {
   );
 } catch {
   console.error(
-    "\n  No backend/amplify_outputs.json. Run `npm run backend:sandbox`\n" +
-      "  (or `ampx generate outputs` for a deployed branch) first.\n"
+    "\n  No backend/amplify_outputs.json. Deploy a sandbox first:\n" +
+      "    npm run dev            (sandbox + site)\n" +
+      "    npm --prefix backend run sandbox:once   (backend only)\n" +
+      "  or `ampx generate outputs --app-id <id> --branch stage` for a\n" +
+      "  deployed branch.\n"
   );
   process.exit(2);
 }
@@ -91,6 +94,12 @@ console.log("auth invariants (ADR-0002)\n");
  * Read from the outputs file rather than from the CDK, because this is what
  * the browser is actually handed. A backend.ts that sets the right switch and
  * an outputs file that says otherwise is a real failure mode.
+ *
+ * These four read a FILE and never call AWS, so they pass just as happily
+ * against a sandbox that was deleted an hour ago. That is why the live section
+ * below says so when it cannot find the pool: four green lines followed by a
+ * stack trace reads as "the config is fine", and the config is describing
+ * something that no longer exists.
  * ------------------------------------------------------------------------- */
 
 check(
@@ -108,6 +117,40 @@ check(
 );
 
 /* -- the sign-in path ------------------------------------------------------ */
+
+/**
+ * Everything past here talks to Cognito, so it fails in ways that are about
+ * the environment rather than about the code. Reported as a FAIL with a
+ * diagnosis; an unhandled rejection here would bury the useful sentence under
+ * forty lines of Amplify's internal frames.
+ */
+function diagnose(err) {
+  const name = err?.name ?? "";
+  const message = err?.message ?? String(err);
+
+  if (/ResourceNotFound/.test(name) || /does not exist/i.test(message)) {
+    return `The user pool or client named in backend/amplify_outputs.json does
+  not exist. That file is stale — the sandbox it describes has been deleted.
+
+    npm run dev                       redeploy a sandbox, or
+    npm --prefix backend run sandbox:once
+    cd backend && npx ampx generate outputs --app-id <id> --branch stage
+                                      for a deployed branch`;
+  }
+  if (/NotAuthorized/.test(name) || /Incorrect username or password/i.test(message)) {
+    return "APP_USER / APP_PASSWORD were rejected by this pool.";
+  }
+  if (/UserNotFound/.test(name)) {
+    return `No such user in this pool. Accounts are admin-created (ADR-0002):
+  make one in the Cognito console and add it to app-admins.`;
+  }
+  if (/PasswordResetRequired|NewPasswordRequired/.test(name)) {
+    return "The account needs a new password. Re-run with --new-password '…'.";
+  }
+  return `${name || "error"}: ${message}`;
+}
+
+try {
 
 let res = await signIn({ username, password });
 
@@ -149,5 +192,10 @@ await signOut();
 const after = await fetchAuthSession().catch(() => ({}));
 check(!after.tokens?.idToken, "sign-out clears the session");
 
-console.log(`\n${failures === 0 ? "all checks passed" : `${failures} FAILED`}`);
+} catch (err) {
+  check(false, "the live sign-in path");
+  console.error(`\n  ${diagnose(err)}\n`);
+}
+
+console.log(`${failures === 0 ? "all checks passed" : `${failures} FAILED`}`);
 process.exit(failures === 0 ? 0 : 1);
