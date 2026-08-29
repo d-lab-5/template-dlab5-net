@@ -240,6 +240,23 @@ def check_inotify():
 NONE, LIVE, STALE, UNKNOWN = "none", "live", "stale", "unknown"
 
 
+def demo_user_exists(profile):
+    """Whether the demo account is actually in the pool.
+
+    Asked rather than assumed: a sandbox can be deployed by `npm run dev` or
+    `ampx sandbox` directly, neither of which creates it. Printing credentials
+    for an account that is not there would send someone to debug a password
+    that was never set.
+    """
+    try:
+        pool = json.loads(OUTPUTS.read_text())["auth"]["user_pool_id"]
+    except (json.JSONDecodeError, KeyError, OSError):
+        return False
+    r = aws(["cognito-idp", "admin-get-user", "--user-pool-id", pool,
+             "--username", DEMO_EMAIL], profile=profile)
+    return r.returncode == 0
+
+
 def sandbox_state(profile, have_creds):
     if not OUTPUTS.is_file():
         return NONE, None
@@ -358,7 +375,38 @@ def sign_in_card():
     )
 
 
+def port_in_use(port=8000):
+    """Is something already serving there?
+
+    Gatsby's own message for this is easy to miss in its startup banner, and
+    the usual cause is an earlier dev server from this same script that was
+    never stopped — at which point you are looking at a stale page and
+    wondering why an edit did nothing.
+    """
+    import socket
+
+    with socket.socket() as sock:
+        sock.settimeout(0.4)
+        return sock.connect_ex(("127.0.0.1", port)) == 0
+
+
 def start_dev():
+    if port_in_use():
+        title("Port 8000 is already in use")
+        para(
+            "Something is serving there already — most likely a dev server from\n"
+            "an earlier run of this script. Gatsby will either refuse to start or\n"
+            "quietly pick another port, and you would be reading a stale page.\n"
+            "\n"
+            "Find and stop it, then try again:\n"
+            "    ss -ltnp | grep :8000\n"
+            "    pkill -f 'gatsby develop'"
+        )
+        print()
+        para(dim("Or just open the one already running:"))
+        sign_in_card()
+        return
+
     title("Starting Gatsby")
     sign_in_card()
     print()
@@ -424,7 +472,7 @@ def environment(profile):
     return {label: status for label, (status, _, _) in results}
 
 
-def explain(state, pool):
+def explain(state, pool, have_demo_user=False):
     title("What you are about to create" if state == NONE else "Current state")
     if state == NONE:
         para(
@@ -440,7 +488,17 @@ def explain(state, pool):
             "same account never collide."
         )
     elif state == LIVE:
-        para(f"A sandbox is deployed and reachable.\n  user pool: {dim(pool)}")
+        para(f"A sandbox is deployed and reachable.  {dim('pool ' + str(pool))}")
+        if have_demo_user:
+            sign_in_card()
+        else:
+            print()
+            para(
+                yellow("There is no demo account in this pool yet.")
+                + "\n"
+                + f"Option 1 creates {DEMO_EMAIL} and puts it in {ADMIN_GROUP}.\n"
+                + "It redeploys first, which is quick when nothing changed."
+            )
     elif state == STALE:
         para(
             "amplify_outputs.json is on disk but the user pool it names does not\n"
@@ -504,7 +562,8 @@ def main():
             status = environment(profile)
             have_creds = status.get("aws account") == OK
             state, pool = sandbox_state(profile, have_creds)
-            explain(state, pool)
+            have_demo_user = have_creds and state == LIVE and demo_user_exists(profile)
+            explain(state, pool, have_demo_user)
             stale_view = False
 
         can_delete, can_dev = menu(state)
