@@ -335,14 +335,45 @@ def ensure_demo_user(profile):
     return True
 
 
+def sign_in_card():
+    """Everything needed to get in, printed where it is last on screen.
+
+    Repeated here even though ensure_demo_user() already said it, because
+    between the two there is a Gatsby build: several hundred lines of webpack
+    output that push the credentials off the terminal. The one moment you need
+    them is the moment they have just scrolled away.
+    """
+    print()
+    print(f"  {bold('Open')}      http://localhost:8000")
+    print(f"  {bold('Email')}     {DEMO_EMAIL}")
+    print(f"  {bold('Password')}  {DEMO_PASSWORD}")
+    print()
+    para(
+        dim(
+            "The password is case-sensitive and starts with a capital D. The\n"
+            "field has an eye to reveal what you typed — a wrong character and\n"
+            "a wrong account give the same error, so it is worth a look before\n"
+            "assuming the credentials are wrong."
+        )
+    )
+
+
 def start_dev():
-    title("Starting Gatsby — http://localhost:8000")
+    title("Starting Gatsby")
+    sign_in_card()
+    print()
     para(dim("Ctrl-C stops the dev server. The sandbox stays deployed."))
     print()
     try:
         subprocess.run(["npx", "gatsby", "develop", "-H", "0.0.0.0"], cwd=SITE)
     except KeyboardInterrupt:
         pass
+    # And again on the way out: by now the credentials are thousands of lines
+    # up, and the usual reason for stopping the server is to start it again.
+    print()
+    title("Dev server stopped")
+    sign_in_card()
+    para(dim("Restart it with option 3. The sandbox is untouched."))
 
 
 def delete_sandbox(profile):

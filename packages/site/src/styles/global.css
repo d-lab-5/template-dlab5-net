@@ -119,6 +119,49 @@ a {
   outline-offset: 1px;
 }
 
+/* -- a password field with a reveal toggle -------------------------------- */
+
+/* The input and the eye share a box, so the button can sit inside the field
+   rather than beside it — beside it, the field stops lining up with every
+   other field in the form. */
+.app-field__control {
+  position: relative;
+  display: block;
+}
+
+.app-field__control input {
+  width: 100%;
+  /* Room for the button, so a long password scrolls under it rather than
+     behind it. */
+  padding-right: 2.5rem;
+}
+
+.app-field__reveal {
+  position: absolute;
+  right: 0;
+  top: 0;
+  height: 100%;
+  width: 2.25rem;
+  display: grid;
+  place-items: center;
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  color: var(--app-text-muted);
+}
+
+.app-field__reveal:hover {
+  color: var(--app-text);
+}
+
+/* It is out of the tab order, so :focus-visible will not fire — but a pointer
+   user still needs to see the state change, and aria-pressed is the thing that
+   is actually true. */
+.app-field__reveal[aria-pressed="true"] {
+  color: var(--app-accent);
+}
+
 .app-button {
   background: var(--app-accent-strong);
   border: 0;

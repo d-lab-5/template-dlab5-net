@@ -64,6 +64,82 @@ async function readSession(): Promise<Session> {
 
 /* -------------------------------------------------------------------------- */
 
+/**
+ * A password input with a reveal toggle.
+ *
+ * Worth the twenty lines: an admin-provisioned password is transcribed from
+ * somewhere else — an email, a terminal, a password manager — and a wrong
+ * character produces the same "Incorrect username or password" as a wrong
+ * account. Without a way to look, the two are indistinguishable and the user
+ * retypes the same mistake.
+ *
+ * The button is `type="button"`. Inside a <form> the default is "submit", so
+ * omitting it makes the eye submit the form — half-typed — on every click.
+ *
+ * It stays out of the tab order (`tabIndex={-1}`): someone tabbing from the
+ * password to the submit button should reach the submit button. It is still
+ * reachable by pointer and announced to a screen reader through aria-label,
+ * whose text tracks the state so it says what the next press will do.
+ */
+function PasswordField({
+  id,
+  label,
+  value,
+  onChange,
+  autoComplete,
+}: {
+  id: string;
+  label: string;
+  value: string;
+  onChange: (value: string) => void;
+  autoComplete: string;
+}) {
+  const [shown, setShown] = React.useState(false);
+
+  return (
+    <label className="app-field app-field--password" htmlFor={id}>
+      <span>{label}</span>
+      <span className="app-field__control">
+        <input
+          id={id}
+          type={shown ? "text" : "password"}
+          autoComplete={autoComplete}
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          required
+        />
+        <button
+          type="button"
+          className="app-field__reveal"
+          onClick={() => setShown((previous) => !previous)}
+          aria-pressed={shown}
+          aria-label={shown ? "Hide password" : "Show password"}
+          title={shown ? "Hide password" : "Show password"}
+          tabIndex={-1}
+        >
+          {shown ? (
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                 stroke="currentColor" strokeWidth="1.6" strokeLinecap="round"
+                 strokeLinejoin="round" aria-hidden="true">
+              <path d="M17.94 17.94A10.1 10.1 0 0 1 12 20c-7 0-11-8-11-8a18.5 18.5 0 0 1 5.06-5.94" />
+              <path d="M9.9 4.24A9.1 9.1 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19" />
+              <path d="M14.12 14.12a3 3 0 1 1-4.24-4.24" />
+              <path d="m1 1 22 22" />
+            </svg>
+          ) : (
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                 stroke="currentColor" strokeWidth="1.6" strokeLinecap="round"
+                 strokeLinejoin="round" aria-hidden="true">
+              <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7Z" />
+              <circle cx="12" cy="12" r="3" />
+            </svg>
+          )}
+        </button>
+      </span>
+    </label>
+  );
+}
+
 function SignInForm({ onSignedIn }: { onSignedIn: () => Promise<void> }) {
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
@@ -113,16 +189,13 @@ function SignInForm({ onSignedIn }: { onSignedIn: () => Promise<void> }) {
         </p>
 
         {needsNewPassword ? (
-          <label className="app-field">
-            <span>New password</span>
-            <input
-              type="password"
-              autoComplete="new-password"
-              value={newPassword}
-              onChange={(e) => setNewPassword(e.target.value)}
-              required
-            />
-          </label>
+          <PasswordField
+            id="app-new-password"
+            label="New password"
+            autoComplete="new-password"
+            value={newPassword}
+            onChange={setNewPassword}
+          />
         ) : (
           <>
             <label className="app-field">
@@ -135,16 +208,13 @@ function SignInForm({ onSignedIn }: { onSignedIn: () => Promise<void> }) {
                 required
               />
             </label>
-            <label className="app-field">
-              <span>Password</span>
-              <input
-                type="password"
-                autoComplete="current-password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-              />
-            </label>
+            <PasswordField
+              id="app-password"
+              label="Password"
+              autoComplete="current-password"
+              value={password}
+              onChange={setPassword}
+            />
           </>
         )}
 
