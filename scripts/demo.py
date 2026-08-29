@@ -57,6 +57,19 @@ ADMIN_GROUP = "app-admins"
 
 TTY = sys.stdout.isatty()
 
+# Line-buffer our own output.
+#
+# Python block-buffers stdout when it is not a terminal, so piping this into a
+# log or a pager holds every print() until the buffer fills — while the ampx
+# and gatsby subprocesses, which own the fd directly, stream out normally. The
+# result is a log that shows a deploy finishing and then appears to stop, with
+# the demo account never mentioned even though it was created. Observed doing
+# exactly that, which is the only reason this line is here.
+try:
+    sys.stdout.reconfigure(line_buffering=True)
+except AttributeError:  # pragma: no cover - Python < 3.7
+    pass
+
 
 def _c(code: str, text: str) -> str:
     return f"\033[{code}m{text}\033[0m" if TTY else text

@@ -54,7 +54,20 @@ const SKIP_DIRS = new Set([
 
 // Rewriting a lockfile or a binary is never right, and rewriting the ADRs
 // would erase the reasoning a fork is supposed to inherit.
-const SKIP_FILES = new Set(["package-lock.json", "rename.mjs"]);
+//
+// amplify_outputs.json is the subtle one, and it bit during a live run. It is
+// GENERATED, it is git-ignored, and it describes infrastructure that already
+// exists — a deployed pool whose group really is called `app-admins`. Renaming
+// the file makes it claim `fl-admins` while the pool it points at says
+// otherwise, and `verify:auth` then passes its group assertion against a lie.
+// The file regenerates correctly on the next deploy; it must not be edited.
+const SKIP_FILES = new Set([
+  "package-lock.json",
+  "rename.mjs",
+  "amplify_outputs.json",
+  "amplify_outputs.d.ts",
+  "gatsby-types.d.ts",
+]);
 const SKIP_PATH_PREFIXES = ["docs/adr/"];
 
 const TEXT_EXTENSIONS = new Set([

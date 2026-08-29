@@ -28,9 +28,18 @@ behind it by construction; a new page cannot be unprotected.
 *pool* level, not hidden in the UI, so it holds even against a direct Cognito
 API call. `defineAuth` does not expose that switch, which is why it is CDK.
 
-**There is no guest identity.** `allowUnauthenticatedIdentities` is false,
-which removes the guest IAM role entirely rather than leaving it present and
-unused.
+**There is no guest identity.** `allowUnauthenticatedIdentities` is false, so
+the identity pool will not vend credentials to an unauthenticated caller.
+
+It does *not* remove the guest IAM role. `defineAuth` creates an
+unauthenticated user role regardless, and this flag does not touch it — checked
+against a live sandbox, where the auth stack contains
+`amplifyAuthunauthenticatedUserRole` while the pool reports
+`AllowUnauthenticatedIdentities=false`. The role is unassumable, because
+nothing can obtain credentials for it, and that is the property that matters.
+Do not read its presence in the console as a misconfiguration, and do not go
+looking for the switch that deletes it — there isn't one short of dropping to
+the L1 pool and rebuilding the role attachment.
 
 **One static group, `app-admins`.** Per-tenant groups are `app-<slug>` and are
 *not* declared in `defineAuth`: declaring them would mean a backend deploy per

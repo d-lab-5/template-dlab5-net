@@ -26,8 +26,17 @@ cfnUserPool.adminCreateUserConfig = {
   allowAdminCreateUserOnly: true,
 };
 
-// Nothing here is world-readable. Refusing unauthenticated identities removes
-// the guest IAM role entirely rather than leaving it present but unused.
+// Nothing here is world-readable, so the identity pool refuses to vend a guest
+// identity at all.
+//
+// Note what this does NOT do, because the comment here used to claim otherwise
+// and a deploy disproved it: defineAuth still creates an unauthenticated user
+// ROLE, and the flag does not remove it. Verified against a live sandbox —
+// `amplifyAuthunauthenticatedUserRole` is present in the auth stack while the
+// pool reports AllowUnauthenticatedIdentities=false. The role is unreachable
+// because nothing can obtain credentials to assume it, which is the property
+// that matters; it is not absent. Deleting it would mean dropping down to the
+// L1 identity pool and rebuilding the role attachment by hand.
 cfnIdentityPool.allowUnauthenticatedIdentities = false;
 
 /* ------------------------------------------------------------------------ *

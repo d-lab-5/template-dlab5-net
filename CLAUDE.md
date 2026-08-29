@@ -100,10 +100,17 @@ can sign in as immediately:
 
 Both are constrained by Cognito rather than chosen. The username must be an
 **email**, because `loginWith: { email }` makes email the pool's username
-attribute. The password needs an **uppercase** letter, because `defineAuth` sets
-no password policy and Cognito's own default demands upper, lower, digit and
-symbol — so `demo-user$1` is rejected and `Demo-user$1` is not. Override either
-with `DEMO_EMAIL` / `DEMO_PASSWORD`. Relaxing the pool's policy to fit a nicer
+attribute. The password needs an **uppercase** letter — `defineAuth` passes no
+password policy, so CDK emits none and the pool takes Cognito's own default.
+Read off a deployed pool, that default is:
+
+```json
+{ "MinimumLength": 8, "RequireUppercase": true, "RequireLowercase": true,
+  "RequireNumbers": true, "RequireSymbols": true }
+```
+
+`demo-user$1` satisfies every clause except the uppercase, which is the whole
+reason for the capital D. Override either with `DEMO_EMAIL` / `DEMO_PASSWORD`. Relaxing the pool's policy to fit a nicer
 password would weaken the template permanently to save one keystroke.
 
 `npm run dev` (`scripts/dev.sh`) is the same thing without the menu, for when
