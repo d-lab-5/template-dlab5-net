@@ -1,7 +1,7 @@
 import * as React from "react";
 import { Link } from "gatsby";
 import { signOutAndReload, useSession } from "./AuthGate";
-import { useTheme } from "./useTheme";
+import { ThemeSegments } from "./ThemeSegments";
 import { listWorkspaces } from "../lib/data";
 import type { Workspace } from "../lib/data";
 
@@ -221,28 +221,6 @@ function RailSection({
     <div className="app-rail__section">
       <h2 className="app-rail__sectionlabel">{label}</h2>
       {children}
-    </div>
-  );
-}
-
-/** Dark/light as a segmented pair rather than one ambiguous icon button. */
-function ThemeSegments() {
-  const [theme, toggle] = useTheme();
-  return (
-    <div className="app-seg" role="group" aria-label="Appearance">
-      {(["dark", "light"] as const).map((value) => (
-        <button
-          key={value}
-          type="button"
-          className={`app-seg__option${theme === value ? " app-seg__option--on" : ""}`}
-          aria-pressed={theme === value}
-          onClick={() => {
-            if (theme !== value) toggle();
-          }}
-        >
-          {value === "dark" ? "☾" : "☀"} {value}
-        </button>
-      ))}
     </div>
   );
 }

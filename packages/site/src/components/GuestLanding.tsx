@@ -1,4 +1,7 @@
 import * as React from "react";
+import { ThemeSegments } from "./ThemeSegments";
+import logoDark from "../images/logo-dark.png";
+import logoLight from "../images/logo-light.png";
 
 /**
  * What a visitor sees before signing in.
@@ -11,14 +14,6 @@ import * as React from "react";
  *
  * What it is NOT is a bare password box on an empty background. A visitor
  * should arrive at something that says what this is.
- *
- * The `<Art/>` below is a placeholder, and it is the right thing to replace
- * first. The pattern worth copying is blueprinting's: it draws the ArchiMate
- * metamodel itself — sixty element types joined where the specification
- * permits a relationship — compiled into the bundle, so it costs no network
- * call and reveals nothing, because it is the published specification and is
- * identical for every visitor. Decorative geometry would have been easier and
- * would have meant nothing. Draw the thing your app is about.
  */
 export function GuestLanding({ children }: { children: React.ReactNode }) {
   return (
@@ -36,6 +31,14 @@ export function GuestLanding({ children }: { children: React.ReactNode }) {
           {children}
         </div>
 
+        {/* Appearance before sign-in, not after. Someone arriving at night
+            should be able to turn the lights down without authenticating
+            first, and this is the screen they are looking at. */}
+        <div className="app-rail__section">
+          <h2 className="app-rail__sectionlabel">Appearance</h2>
+          <ThemeSegments />
+        </div>
+
         <div className="app-rail__section">
           <h2 className="app-rail__sectionlabel">Accounts</h2>
           <p className="app-rail__note">
@@ -48,26 +51,87 @@ export function GuestLanding({ children }: { children: React.ReactNode }) {
       </nav>
 
       <div className="app-shell__body">
-        <main className="app-shell__main">
-          <div className="app-hero">
-            <div className="app-hero__copy">
-              <p className="app-hero__eyebrow">D-LAB-5</p>
-              <h1 className="app-hero__title">
-                A starting point,{" "}
-                <span className="app-hero__titleaccent">not a product</span>
-              </h1>
-              <p className="app-hero__lede">
-                Gatsby 5 and React 18 in front, an AWS Amplify Gen 2 backend
-                behind, and one Cognito gate over the whole thing. Fork it, run{" "}
-                <code>npm run rename</code>, and start on the part that is
-                actually yours.
-              </p>
-            </div>
-            <Art />
-          </div>
+        <main className="app-shell__main app-guest">
+          <Logo />
+
+          <h1 className="app-guest__title">
+            The Digital Twin Platform and Product Engineers
+          </h1>
+
+          <p className="app-guest__lede">
+            Gatsby 5 and React 18 in front, an AWS Amplify Gen 2 backend
+            behind, and one Cognito gate over the whole thing.
+          </p>
+
+          {/* An outbound link, so it carries noreferrer noopener — the tab it
+              opens must not get a handle on this one. */}
+          <a
+            className="app-coffee"
+            href="https://buymeacoffee.com/dlab5"
+            target="_blank"
+            rel="noreferrer noopener"
+          >
+            <CoffeeIcon />
+            Buy me a coffee
+          </a>
         </main>
       </div>
     </div>
+  );
+}
+
+/**
+ * The mark, in whichever theme is showing.
+ *
+ * Both files are rendered and CSS hides one, rather than swapping `src` from
+ * the theme hook. The hook starts at "dark" on the first client render to
+ * match what the server emitted, so a src swap would paint the dark logo and
+ * then replace it — a visible flicker for every light-theme visitor, on the
+ * first screen they ever see. CSS keyed on the same `data-app-theme` attribute
+ * the pre-paint script already set has no such gap.
+ *
+ * The cost is that both files are fetched. They are ~100 KB each, and this is
+ * the only page that shows them.
+ */
+function Logo() {
+  return (
+    <div className="app-guest__logo">
+      <img
+        className="app-guest__logoimg app-guest__logoimg--dark"
+        src={logoDark}
+        alt="D-LAB-5 — Twin. Experiment. Automate."
+        width={480}
+        height={480}
+      />
+      <img
+        className="app-guest__logoimg app-guest__logoimg--light"
+        src={logoLight}
+        alt="D-LAB-5 — Twin. Experiment. Automate."
+        width={480}
+        height={480}
+      />
+    </div>
+  );
+}
+
+function CoffeeIcon() {
+  return (
+    <svg
+      width="16"
+      height="16"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.6"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      <path d="M4 8h12v6a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4V8Z" />
+      <path d="M16 9h1.5a2.5 2.5 0 0 1 0 5H16" />
+      <path d="M7 2v2.5M10.5 2v2.5M14 2v2.5" />
+      <path d="M3 21h14" />
+    </svg>
   );
 }
 
@@ -88,56 +152,5 @@ function Mark() {
         <path d="M8 8h8M8 12h5M8 16h3" />
       </svg>
     </span>
-  );
-}
-
-/**
- * Placeholder art: the three tiers this template ships, stacked.
- *
- * Drawn from the categorical tokens rather than fixed colours, so it follows
- * the theme like everything else — and so that replacing it does not leave a
- * stray hex code behind.
- */
-function Art() {
-  const tiers = [
-    { label: "site", y: 8, fill: "var(--app-cat-1)" },
-    { label: "core", y: 48, fill: "var(--app-cat-3)" },
-    { label: "backend", y: 88, fill: "var(--app-cat-4)" },
-  ];
-
-  return (
-    <svg className="app-hero__art" viewBox="0 0 200 130" aria-hidden="true">
-      {tiers.map((tier) => (
-        <g key={tier.label}>
-          <rect
-            x="10"
-            y={tier.y}
-            width="180"
-            height="30"
-            rx="6"
-            fill={tier.fill}
-            fillOpacity={0.16}
-            stroke={tier.fill}
-            strokeOpacity={0.6}
-          />
-          <text
-            x="24"
-            y={tier.y + 20}
-            fill="var(--app-text-muted)"
-            fontSize="11"
-            fontFamily="var(--app-font-mono)"
-          >
-            {tier.label}
-          </text>
-        </g>
-      ))}
-      {/* The two seams that matter: site imports core, backend stands apart. */}
-      <path
-        d="M100 38v10M100 78v10"
-        stroke="var(--app-border-strong)"
-        strokeWidth="1.5"
-        strokeDasharray="3 3"
-      />
-    </svg>
   );
 }

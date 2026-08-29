@@ -483,6 +483,84 @@ a {
   font-size: 0.75rem;
 }
 
+/* -- the guest landing ----------------------------------------------------- */
+
+/* One centred column. The rail already carries the form and the explanation,
+   so this side has one job: say what the product is. */
+.app-guest {
+  display: grid;
+  justify-items: center;
+  align-content: center;
+  gap: var(--app-space-4);
+  text-align: center;
+  min-height: 100%;
+}
+
+.app-guest__logo {
+  /* The two files are stacked in the same grid cell rather than laid out in a
+     row, so hiding one does not shift the other. */
+  display: grid;
+  width: min(15rem, 60vw);
+}
+
+.app-guest__logoimg {
+  grid-area: 1 / 1;
+  width: 100%;
+  height: auto;
+  border-radius: var(--app-radius);
+}
+
+/* Dark is the default, matching :root and what the server emits. Light is the
+   override, keyed on the same attribute the pre-paint script sets — so the
+   right logo is the one that paints, not the one that replaces another. */
+.app-guest__logoimg--light {
+  display: none;
+}
+
+[data-app-theme="light"] .app-guest__logoimg--dark {
+  display: none;
+}
+
+[data-app-theme="light"] .app-guest__logoimg--light {
+  display: block;
+}
+
+.app-guest__title {
+  margin: 0;
+  max-width: 22ch;
+  font-size: clamp(1.5rem, 1.1rem + 1.6vw, 2.25rem);
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+}
+
+.app-guest__lede {
+  margin: 0;
+  max-width: 44ch;
+  color: var(--app-text-muted);
+  line-height: 1.65;
+}
+
+/* Deliberately not a .app-button: it leaves the site, and giving it the same
+   weight as the primary action would make "buy me a coffee" compete with
+   "sign in". */
+.app-coffee {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--app-space-2);
+  margin-top: var(--app-space-2);
+  padding: var(--app-space-2) var(--app-space-4);
+  border: 1px solid var(--app-border-strong);
+  border-radius: 999px;
+  color: var(--app-text-muted);
+  font-size: 0.8125rem;
+  text-decoration: none;
+}
+
+.app-coffee:hover {
+  color: var(--app-text);
+  border-color: var(--app-warning);
+}
+
 /* -- hero, on the signed-in home ------------------------------------------ */
 
 .app-hero {
