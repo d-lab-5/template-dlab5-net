@@ -51,16 +51,31 @@ export function GuestLanding({ children }: { children: React.ReactNode }) {
       </nav>
 
       <div className="app-shell__body">
+        {/* Order is the argument this page makes: what the repository IS,
+            then whose it is, then what it is for. The mark sits between the
+            claim and the product line rather than on top of them, so the
+            heading is what a reader lands on first. */}
         <main className="app-shell__main app-guest">
-          <Logo />
+          <p className="app-hero__eyebrow">D-LAB-5</p>
 
-          <h1 className="app-guest__title">
-            The Digital Twin Platform and Product Engineers
+          <h1 className="app-hero__title">
+            A starting point,{" "}
+            <span className="app-hero__titleaccent">not a product</span>
           </h1>
 
-          <p className="app-guest__lede">
+          <Logo />
+
+          {/* A paragraph, not a second heading. The page already has its one
+              subject above; making this an h2 would give it two. */}
+          <p className="app-guest__tagline">
+            The Digital Twin Platform and Product Engineers
+          </p>
+
+          <p className="app-hero__lede">
             Gatsby 5 and React 18 in front, an AWS Amplify Gen 2 backend
-            behind, and one Cognito gate over the whole thing.
+            behind, and one Cognito gate over the whole thing. Fork it, run{" "}
+            <code>npm run rename</code>, and start on the part that is actually
+            yours.
           </p>
 
           {/* An outbound link, so it carries noreferrer noopener — the tab it
