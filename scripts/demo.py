@@ -213,7 +213,7 @@ def check_aws_identity(profile):
 
 
 def check_inotify():
-    """CLAUDE.md constraint 10. Gatsby dies with ENOSPC and blames nothing."""
+    """Constraint 10. Gatsby dies with ENOSPC and blames nothing."""
     try:
         watches = int(Path("/proc/sys/fs/inotify/max_user_watches").read_text())
         instances = int(Path("/proc/sys/fs/inotify/max_user_instances").read_text())

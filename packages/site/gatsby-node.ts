@@ -38,7 +38,7 @@ export const onCreateWebpackConfig: GatsbyNode["onCreateWebpackConfig"] = ({
  *
  * This has a consequence OUTSIDE this repository: no file exists at
  * /w/<slug>/, so Amplify Hosting needs an explicit 200 rewrite ahead of its
- * catch-all. See constraint 11 in CLAUDE.md. Adding another client-only route
+ * catch-all. See constraint 11 in the dlab5-fullstack-template skill. Adding another client-only route
  * here means adding another hosting rule there.
  */
 export const onCreatePage: GatsbyNode["onCreatePage"] = async ({

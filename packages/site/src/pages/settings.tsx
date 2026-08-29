@@ -10,8 +10,8 @@ import { useSession } from "../components/AuthGate";
  * not scoped to one: it carries its owner's groups and therefore reaches every
  * workspace they can reach. Putting it under a workspace would say otherwise.
  *
- * Blueprinting's equivalent is `/keys/`, for the same reason — an API key
- * belongs to a person, not to a product.
+ * An API key would belong here too, for the same reason: it carries its
+ * owner's groups and reaches everything they reach.
  */
 const SettingsPage: React.FC = () => {
   const session = useSession();
@@ -46,9 +46,8 @@ const SettingsPage: React.FC = () => {
         <h2 className="app-panel__title">Put your account screens here</h2>
         <p className="app-panel__hint">
           API keys, notification preferences, a personal access token — anything
-          that belongs to the person rather than to a workspace. Blueprinting's{" "}
-          <code>packages/site/src/components/ApiKeys.tsx</code> is a worked
-          example of the first of those.
+          that belongs to the person rather than to a workspace, and therefore
+          reaches every workspace they can open.
         </p>
       </div>
     </Shell>

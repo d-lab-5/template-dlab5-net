@@ -93,8 +93,8 @@ export function railItems(slug: string): RailItem[] {
  * Tools, kept apart from the views ON PURPOSE.
  *
  * The Workspace section answers "what does this look like"; these answer "how
- * do things get in and out of it". Mixing them made blueprinting's rail a list
- * of eleven items with no shape, and buried an importer inside a screen where
+ * do things get in and out of it". Mixing them turns a rail into a list of
+ * eleven items with no shape, and buries an importer inside a screen where
  * nobody looking for one would think to check.
  */
 export function toolItems(slug: string): RailItem[] {

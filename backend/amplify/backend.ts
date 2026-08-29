@@ -123,14 +123,13 @@ backend.objectProxy.addEnvironment("OBJECT_BUCKET_NAME", bucket.bucketName);
  * generated mutation and the group by hand in the console, which is honest
  * about the state and keeps the backend to one example function.
  *
- * When a fork needs it, copy
- * `blueprinting-dlab5-net/backend/amplify/functions/projectAdmin/`. Read its
- * comments first: an IAM grant naming `backend.auth.resources.userPool.
- * userPoolArn` closes a CloudFormation cycle, because the auth stack already
- * references function code. The working shape is to wildcard the userpool ARN
- * to this account and region, and to recover the real pool id at runtime from
- * the caller's token issuer — which is authoritative anyway, since it is the
- * pool that signed the request. That cost a deploy to find out.
+ * When a fork adds it, mind the trap: an IAM grant naming
+ * `backend.auth.resources.userPool.userPoolArn` closes a CloudFormation cycle,
+ * because the auth stack already references function code. The working shape
+ * is to wildcard the userpool ARN to this account and region, and to recover
+ * the real pool id at runtime from the caller's token issuer — which is
+ * authoritative anyway, since it is the pool that signed the request. That
+ * costs a failed deploy to rediscover.
  * ------------------------------------------------------------------------ */
 
 export default backend;

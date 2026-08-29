@@ -59,8 +59,8 @@ reference them anyway. See ADR-0004.
   "backend not configured" notice rather than crashing.
 - Onboarding is a manual act: create the user, create the `app-<slug>` group,
   add the user to it. In this template the group is created by hand in the
-  Cognito console. Blueprinting's `projectAdmin` Lambda automates it; copy that
-  when the manual step becomes the bottleneck.
+  Cognito console. Automating it means an admin Lambda that mints the row and
+  the group together; add one when the manual step becomes the bottleneck.
 - **Adding a user to a group does not change their existing tokens.** They must
   sign out and in, or the app must call
   `fetchAuthSession({ forceRefresh: true })`. This looks like a caching bug

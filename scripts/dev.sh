@@ -116,7 +116,7 @@ preflight_aws() {
 
 # -- Gatsby's file watchers --------------------------------------------------
 #
-# Constraint 10 in CLAUDE.md. Gatsby exhausts the default inotify allowance and
+# Constraint 10. Gatsby exhausts the default inotify allowance and
 # dies with ENOSPC, which names neither Gatsby nor inotify in a way that
 # suggests the fix. Checked here because the failure arrives ten seconds after
 # a successful-looking start, by which point you are reading the wrong output.

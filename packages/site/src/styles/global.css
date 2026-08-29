@@ -9,7 +9,8 @@
  * fashionable and it is not enforced by tooling; it is here so that a class in
  * the markup can be found in this file by reading it.
  *
- * NOTE (CLAUDE.md constraint 13): a change to this file needs a clean build to
+ * NOTE (constraint 13 in the dlab5-fullstack-template skill): a change to
+ * this file needs a clean build to
  * appear. `npm run build` reuses the cached stylesheet and emits an IDENTICAL
  * content hash, so the page renders with the old CSS and your edit looks like
  * it did nothing. Run:

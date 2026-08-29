@@ -9,7 +9,7 @@ import type { Workspace } from "@dlab5/app-core";
  * @aws-amplify/backend into the site's TypeScript program, and with it the
  * graphql 15 tree that ADR-0001 keeps out of the frontend. The result shapes
  * below are narrow, hand-written for that reason, and MUST BE KEPT IN STEP
- * with data/resource.ts by hand. CLAUDE.md constraint 12.
+ * with data/resource.ts by hand. Constraint 12 in the dlab5-fullstack-template skill.
  *
  * Verify the boundary still holds:
  *   npx tsc --noEmit -p packages/site/tsconfig.json --listFiles \
@@ -159,9 +159,9 @@ export async function getWorkspace(slug: string): Promise<Workspace | null> {
  * the console, or the workspace is one only app-admins can open.
  *
  * When that becomes tiresome, replace this with a call to an admin Lambda that
- * does both — see the note at the foot of backend/amplify/backend.ts, and copy
- * blueprinting's `projectAdmin`. The Cognito calls need admin permissions the
- * browser must never hold, so the check belongs in the function, not here.
+ * does both — see the note at the foot of backend/amplify/backend.ts. The
+ * Cognito calls need admin permissions the browser must never hold, so the
+ * check belongs in the function, not here.
  */
 export async function createWorkspace(input: {
   slug: string;

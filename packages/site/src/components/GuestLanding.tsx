@@ -1,7 +1,5 @@
 import * as React from "react";
 import { ThemeSegments } from "./ThemeSegments";
-import logoDark from "../images/logo-dark.png";
-import logoLight from "../images/logo-light.png";
 
 /**
  * What a visitor sees before signing in.
@@ -107,20 +105,25 @@ export function GuestLanding({ children }: { children: React.ReactNode }) {
  *
  * The cost is that both files are fetched. They are ~100 KB each, and this is
  * the only page that shows them.
+ *
+ * Served from `static/`, so the paths are literal and stable rather than
+ * content-hashed imports. That is the trade `static/` makes: a replaced logo
+ * keeps its URL, so a cache can hand back the old one. If that ever bites,
+ * the fix is a query string on these two src values, not a new directory.
  */
 function Logo() {
   return (
     <div className="app-guest__logo">
       <img
         className="app-guest__logoimg app-guest__logoimg--dark"
-        src={logoDark}
+        src="/logo-dark.png"
         alt="D-LAB-5 — Twin. Experiment. Automate."
         width={480}
         height={480}
       />
       <img
         className="app-guest__logoimg app-guest__logoimg--light"
-        src={logoLight}
+        src="/logo-light.png"
         alt="D-LAB-5 — Twin. Experiment. Automate."
         width={480}
         height={480}

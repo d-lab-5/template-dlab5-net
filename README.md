@@ -5,8 +5,13 @@ front, an **AWS Amplify Gen 2** backend behind, and one Cognito gate over the
 whole thing. Fork it, rename it, and start on the part that is actually yours.
 
 It is deliberately not a product. What it carries is the shape — and the dozen
-constraints that shape has already cost someone a day each to discover, written
-down in [`CLAUDE.md`](CLAUDE.md) and [`docs/adr/`](docs/adr/).
+constraints that shape has already cost someone a day each to discover,
+recorded in [`docs/adr/`](docs/adr/).
+
+Working guidance for Claude Code lives outside the repository, as the
+`dlab5-fullstack-template` skill, so it follows you into every fork instead of
+being copied once and left to drift. `CLAUDE.md` is git-ignored here: keep a
+local one if you want, it will not be committed.
 
 ## What you get
 
@@ -117,21 +122,19 @@ rm -rf node_modules packages/*/node_modules package-lock.json
 npm install && npm --prefix backend install && npm test && npm run build
 ```
 
-The first section of [`CLAUDE.md`](CLAUDE.md) lists what is placeholder and
-expected to be deleted, and what should survive untouched.
+What is placeholder and expected to go: the five stub views in
+`packages/site/src/pages/w.tsx`, the menu arrays in `Shell.tsx`, the hero copy
+in `GuestLanding.tsx`, the `Workspace` model, and this README.
+
+What should survive untouched, because it is the point of the template:
+`AuthGate`, `lib/amplify.ts`, `useTheme`, `gatsby-ssr.tsx`, `gatsby-node.ts`,
+`amplify.yml`, the `objectProxy` Lambda, the hardening in `backend.ts`,
+`tokens.css`, and the three `scripts/`.
 
 ## Stack
 
 Gatsby 5 · React 18 · TypeScript · AWS Amplify Gen 2 · Cognito · AppSync ·
 DynamoDB · S3 · npm workspaces · Node 22.
-
-## Where to look when this is too thin
-
-[`~/D-LAB-5/blueprinting-dlab5-net`](https://github.com/d-lab-5/blueprinting-dlab5-net)
-is where this template came from, and it has the worked version of everything
-stubbed here: provisioning a tenant and its Cognito group in one mutation, a
-document store with classification, API keys over Cognito custom auth, and an
-MCP server.
 
 ## Licence
 

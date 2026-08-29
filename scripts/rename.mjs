@@ -269,8 +269,8 @@ if (!args.dryRun && touched > 0) {
   symlinks in node_modules still point at @dlab5/app-* and nothing resolves.
 
   Then, by hand:
-    - README.md and CLAUDE.md — the first section of each describes a
-      template, and yours is not one any more.
+    - README.md — its first section describes a template, and yours is not
+      one any more.
     - packages/site/src/components/Shell.tsx — railItems() and toolItems().
     - packages/site/src/pages/w.tsx — the VIEWS list and the placeholders.
     - packages/site/src/components/GuestLanding.tsx — the hero copy and <Art/>.

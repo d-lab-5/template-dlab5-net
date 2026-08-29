@@ -13,7 +13,7 @@ import type { Workspace } from "../lib/data";
  * render. The id and the view come out of the URL at runtime.
  *
  * ONE page component for all five views rather than five matchPath routes.
- * The alternative needs a hosting rewrite per route (CLAUDE.md constraint 11)
+ * The alternative needs a hosting rewrite per route (constraint 11 in the dlab5-fullstack-template skill)
  * — configuration that lives outside this repository and that nobody will
  * remember to add.
  *
@@ -128,9 +128,8 @@ const LABELS: Record<View, string> = {
 /**
  * The placeholders.
  *
- * Each one names what belongs there and, where blueprinting has a worked
- * version, points at it. A placeholder that only says "TODO" is a placeholder
- * that gets deleted and reinvented.
+ * Each one names what belongs there rather than saying "TODO". A placeholder
+ * with no content is a placeholder that gets deleted and reinvented.
  */
 function ViewBody({
   view,
@@ -198,8 +197,8 @@ function ViewBody({
           <p className="app-panel__hint">
             Parse in <code>@dlab5/app-core</code>, validate at the boundary with{" "}
             <code>assertWorkspace</code>-style checks that report every problem
-            at once, and only then write. Blueprinting&rsquo;s{" "}
-            <code>packages/core/src/import/</code> is the worked version.
+            at once, and only then write — a parser that reports one problem
+            per attempt turns a bad file into a sequence of guesses.
           </p>
         </div>
       );
@@ -210,9 +209,8 @@ function ViewBody({
           <h2 className="app-panel__title">Getting things out</h2>
           <p className="app-panel__hint">
             A round trip that is only ever tested against itself proves nothing.
-            Blueprinting&rsquo;s <code>verify:bundle</code> exports, re-imports
-            under a fresh id, exports THAT and compares byte for byte — going
-            back out through S3 is the point.
+            Export, re-import under a fresh id, export THAT and compare byte for
+            byte — going back out through storage is the point.
           </p>
         </div>
       );

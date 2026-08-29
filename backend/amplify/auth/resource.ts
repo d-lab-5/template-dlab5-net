@@ -23,10 +23,9 @@ import { defineAuth } from "@aws-amplify/backend";
  * objectProxy function instead. ADR-0004.
  *
  * In this template the `app-<slug>` group is created BY HAND in the Cognito
- * console when a workspace is created. When a fork outgrows that, copy
- * `blueprinting-dlab5-net/backend/amplify/functions/projectAdmin/`: it mints
- * the row and the group in one mutation, and its comments carry the
- * CloudFormation-cycle workaround you will otherwise rediscover the hard way.
+ * console when a workspace is created. A fork that outgrows that should add an
+ * admin function minting the row and the group in one mutation — see the note
+ * at the foot of backend.ts for the CloudFormation trap it has to avoid.
  */
 export const auth = defineAuth({
   loginWith: {
