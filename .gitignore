@@ -171,6 +171,12 @@ temp/
 # readable. Local, and regenerated on every run.
 .dev-sandbox.log
 
+# -- Python ----------------------------------------------------------------
+# scripts/demo.py is run, never imported, so nothing here is needed by anyone.
+# Bytecode appears the moment the file is compiled or imported once.
+__pycache__/
+*.py[cod]
+
 # ---------------------------------------------------------------------------
 # Secrets hygiene — ASSUME THIS REPOSITORY IS PUBLIC.
 #

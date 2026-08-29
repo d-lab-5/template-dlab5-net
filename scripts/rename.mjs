@@ -64,6 +64,10 @@ const TEXT_EXTENSIONS = new Set([
   // why leaving it out would go unnoticed until a fork put a group name or a
   // token prefix in it.
   ".sh",
+  // Python, and this one is not hypothetical: scripts/demo.py hard-codes the
+  // admin group name, so a fork that skipped it would ship a demo script
+  // adding its user to a Cognito group that no longer exists.
+  ".py",
 ]);
 
 /* -- arguments ------------------------------------------------------------- */

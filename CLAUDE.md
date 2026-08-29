@@ -33,7 +33,7 @@ What is placeholder, and expected to go:
 What is **not** placeholder, and should survive: `AuthGate`, `amplify.ts`,
 `useTheme`, `gatsby-ssr.tsx`, `gatsby-node.ts`, `amplify.yml`, `objectProxy`,
 the hardening in `backend.ts`, `tokens.css`, `scripts/dev.sh`,
-`scripts/verify-auth.mjs`, and the constraints below. Those are the point of
+`scripts/demo.py`, `scripts/verify-auth.mjs`, and the constraints below. Those are the point of
 the template.
 
 ## What this is
@@ -57,6 +57,7 @@ backend/            Amplify Gen 2 backend. NOT an npm workspace — see ADR-0001
 packages/core/      Domain logic. Pure TS, no React, no AWS, no DOM.
 packages/site/      The Gatsby 5 app (@dlab5/app-site).
 docs/adr/           Architecture Decision Records. Read these first.
+scripts/demo.py     Menu-driven demo: sandbox, a demo user, dev server.
 scripts/dev.sh      Sandbox + Gatsby in one terminal. The usual entry point.
 scripts/rename.mjs  Turns this template into a project.
 scripts/verify-auth.mjs   The only check that proves the gate against real AWS.
@@ -67,7 +68,8 @@ scripts/verify-auth.mjs   The only check that proves the gate against real AWS.
 ```bash
 npm install && npm --prefix backend install   # two installs; separate trees
 
-npm run dev                         # sandbox + site, one terminal — start here
+npm run demo                        # menu: create/delete sandbox, demo user
+npm run dev                         # sandbox + site, one terminal
 npm run dev -- --web-only           # site alone, no AWS
 npm run dev -- --profile work       # a different AWS profile
 npm run dev -- --identifier qa      # a second, parallel sandbox
@@ -85,7 +87,27 @@ APP_USER=… APP_PASSWORD=… npm run verify:auth   # ADR-0002 invariants, live
 npm run rename -- --name "Fleet" --slug fleet --prefix fl --dry-run
 ```
 
-`npm run dev` (`scripts/dev.sh`) exists because the sandbox and the site have an
+`npm run demo` (`scripts/demo.py`) is the friendliest way in, and the one to
+point a newcomer at. It surveys the environment first — Node, dependencies, AWS
+credentials, region, inotify limits — and prints the fix for anything missing
+rather than failing four minutes into a deploy. Then a menu: create the sandbox,
+delete it, or just start the dev server, with the options that cannot work shown
+dimmed and refusing with a reason. Creating also provisions a demo account you
+can sign in as immediately:
+
+    email     demo-user@example.com
+    password  Demo-user$1
+
+Both are constrained by Cognito rather than chosen. The username must be an
+**email**, because `loginWith: { email }` makes email the pool's username
+attribute. The password needs an **uppercase** letter, because `defineAuth` sets
+no password policy and Cognito's own default demands upper, lower, digit and
+symbol — so `demo-user$1` is rejected and `Demo-user$1` is not. Override either
+with `DEMO_EMAIL` / `DEMO_PASSWORD`. Relaxing the pool's policy to fit a nicer
+password would weaken the template permanently to save one keystroke.
+
+`npm run dev` (`scripts/dev.sh`) is the same thing without the menu, for when
+you already know what you want. It exists because the sandbox and the site have an
 ordering constraint: `ampx sandbox` writes `amplify_outputs.json` and the site
 is useless without it. Run in two terminals, Gatsby usually wins the race,
 finds no outputs and renders the "backend not configured" notice for the rest

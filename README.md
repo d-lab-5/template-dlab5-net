@@ -17,7 +17,7 @@ down in [`CLAUDE.md`](CLAUDE.md) and [`docs/adr/`](docs/adr/).
 | **Storage** | An `objectProxy` Lambda that is the real authorization boundary, hands back presigned GETs, and enforces an `If-Match` precondition on every write. |
 | **Frontend** | One shell component, a collapsible rail with a placeholder menu, a light/dark theme with no flash on load, and a token palette defined in both themes. |
 | **Build** | An `amplify.yml` whose comments encode why every line is the way it is. The build passes with no backend deployed. |
-| **Dev loop** | `npm run dev` — sandbox and site in one terminal, in the right order, with the AWS account printed before anything is created. |
+| **Dev loop** | `npm run demo` — a guided menu that checks the environment, deploys a sandbox, makes a demo user and starts the dev server. `npm run dev` is the same without the menu. |
 | **Tests** | `node --test` over `packages/core`, plus `verify-auth.mjs` for the live sign-in path. |
 
 ## Getting started
@@ -25,13 +25,36 @@ down in [`CLAUDE.md`](CLAUDE.md) and [`docs/adr/`](docs/adr/).
 ```bash
 nvm use                                        # Node 22
 npm install && npm --prefix backend install    # separate trees — ADR-0001
-npm run dev                                    # sandbox + site, one terminal
+npm run demo                                   # guided menu — start here
 ```
 
-`npm run dev` deploys your personal AWS sandbox, waits for it, wires its
-outputs into the site, and starts Gatsby on http://localhost:8000 — then
-re-wires them on every backend redeploy. The first deploy takes a few minutes;
-after that it watches.
+`npm run demo` checks your environment first (Node, dependencies, AWS
+credentials, region, file watchers) and prints the fix for anything missing,
+rather than failing four minutes into a deploy. Then it offers:
+
+```
+  1  Create sandbox  — deploy, make the demo user, start the dev server
+  2  Delete sandbox           (no sandbox to delete)
+  3  Start dev server only    (deploy one first)
+  0  Exit
+```
+
+Options that cannot work yet are dimmed and say why. Creating the sandbox also
+provisions an account you can sign in as straight away:
+
+| | |
+|---|---|
+| email | `demo-user@example.com` |
+| password | `Demo-user$1` |
+
+Both are shaped by Cognito, not by preference: the username must be an email
+(the pool signs in by email), and the password needs an uppercase letter (the
+pool's default policy wants upper, lower, digit and symbol). Override with
+`DEMO_EMAIL` / `DEMO_PASSWORD`.
+
+Once you know the ropes, `npm run dev` is the same thing without the menu — it
+deploys the sandbox, wires its outputs into the site, starts Gatsby on
+http://localhost:8000, and re-wires on every redeploy.
 
 No AWS, or you only want the frontend:
 

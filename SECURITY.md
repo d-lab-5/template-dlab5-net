@@ -67,6 +67,29 @@ improves the experience of a legitimate user and stops nobody. In particular:
   first — a validator that reports one field per attempt turns a malformed
   payload into a sequence of deploys.
 
+## The demo account
+
+`scripts/demo.py` creates `demo-user@example.com` with a password committed in
+plain text, and puts it in `app-admins`. That is deliberate and it is safe only
+because of what a sandbox is: your own private deployment, in your own account,
+that nobody else can reach. It is not a shared secret, and there is nothing to
+leak — anyone reading the repository can see the password and still has no pool
+to use it against.
+
+It stops being safe the moment either of those stops being true:
+
+- **Never run `demo.py` against a deployed branch.** It reads whatever
+  `backend/amplify_outputs.json` points at, and it would happily create an
+  admin with a published password in `stage`. It is written for sandboxes and
+  has no way to tell the difference.
+- **Never carry the demo account into a real environment.** Delete the sandbox
+  when you are done (`option 2`, or
+  `npm --prefix backend run sandbox:delete`), which removes the pool and the
+  account with it.
+
+Override with `DEMO_EMAIL` / `DEMO_PASSWORD` if even that is more than you want
+on disk. A fork that keeps the script should keep this section with it.
+
 ## AWS credentials
 
 Nothing in this repository holds AWS credentials, and nothing should.

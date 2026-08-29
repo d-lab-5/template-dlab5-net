@@ -11,6 +11,7 @@
     "build:core": "npm run build -w @dlab5/app-core",
     "build:web": "npm run build -w @dlab5/app-site",
     "dev": "bash scripts/dev.sh",
+    "demo": "python3 scripts/demo.py",
     "dev:web": "npm run develop -w @dlab5/app-site",
     "start:web": "npm run serve -w @dlab5/app-site",
     "clean:web": "npm run clean -w @dlab5/app-site",
