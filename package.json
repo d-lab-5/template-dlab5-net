@@ -2,7 +2,7 @@
   "name": "template-dlab5-net",
   "private": true,
   "description": "D-LAB-5 fullstack template \u2014 Gatsby 5 frontend, Amplify Gen 2 backend, one Cognito gate",
-  "license": "MIT",
+  "license": "GPL-3.0-or-later",
   "workspaces": [
     "packages/*"
   ],

@@ -138,4 +138,9 @@ DynamoDB · S3 · npm workspaces · Node 22.
 
 ## Licence
 
-MIT — see [LICENSE](LICENSE).
+**GPL-3.0-or-later** — see [LICENSE](LICENSE) and [COPYRIGHT](COPYRIGHT).
+
+This is a template, so the choice reaches further than usual: **anything forked
+from it inherits GPL-3.0**, and a project built on it must be free software
+too. That is the intent. If you need a permissive licence for a particular
+piece of work, this template is not the starting point for it.
